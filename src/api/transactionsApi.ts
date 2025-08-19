@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Usamos process.env para que a variável de ambiente funcione corretamente
+// com o Create React App e na Vercel.
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchTransactions = async (userId: string) => {
   const response = await axios.get(`${API_URL}/transactions/${userId}`);
