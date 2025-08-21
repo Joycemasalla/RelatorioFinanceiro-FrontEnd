@@ -11,7 +11,7 @@ interface Transaction {
   description: string;
   category: string;
   createdAt: string;
-  userId: string; // Adicionado userId
+  userId: string;
 }
 
 interface Summary {
@@ -30,7 +30,7 @@ const COLORS = ['#60A5FA', '#34D399', '#FBBF24', '#F87171', '#A78BFA', '#FB7185'
 // Função utilitária para pegar o userId da URL
 const getUserIdFromUrl = (): string => {
   const params = new URLSearchParams(window.location.search);
-  return params.get('userId') || 'default_user'; // Retorna 'default_user' se não houver ID
+  return params.get('userId') || 'default_user';
 };
 
 const FinanceDashboard: React.FC = () => {
@@ -68,7 +68,7 @@ const FinanceDashboard: React.FC = () => {
     if (isConfirmed) {
       try {
         await deleteTransaction(userId, transactionId);
-        loadData(); // Recarrega os dados após a exclusão
+        loadData();
         alert('Transação excluída com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir transação:', error);
@@ -228,7 +228,7 @@ const FinanceDashboard: React.FC = () => {
         <div className="bg-blue-900 rounded-lg p-4">
           <h3 className="text-sm font-semibold text-blue-100 mb-2">WhatsApp</h3>
           <p className="text-xs text-blue-200">
-            Envie "gastei 50 no mercado" para registrar gastos!
+            Envie "50 no mercado" ou "recebi 1000 de salário".
           </p>
         </div>
       </div>
@@ -581,39 +581,35 @@ const FinanceDashboard: React.FC = () => {
           {renderTransactionsList()}
           
           {/* WhatsApp Integration Info */}
-          {currentView === 'dashboard' && (
-            <div className="mt-8 bg-gradient-to-r from-green-900 to-blue-900 border border-green-700 rounded-xl p-6">
+          <div className="mt-8 bg-gradient-to-r from-green-900 to-blue-900 border border-green-700 rounded-xl p-6">
               <h3 className="text-lg font-semibold text-white mb-3 flex items-center">
-                📱 Integração com o WhatsApp
+                  📱 Integração com o WhatsApp
               </h3>
               <div className="space-y-3 text-sm text-green-100">
-                <div>
-                  <p className="font-medium text-white mb-2">Para registrar gastos:</p>
-                  <div className="space-y-1 ml-4">
-                    <p>• "gastei 50 no mercado"</p>
-                    <p>• "despesa 30 combustível"</p>
-                    <p>• "gasto 25 lanche"</p>
+                  <div>
+                      <p className="font-medium text-white mb-2">Para registrar despesas:</p>
+                      <div className="space-y-1 ml-4">
+                          <p>• "50 no mercado"</p>
+                          <p>• "25 lanche"</p>
+                      </div>
                   </div>
-                </div>
-                <div>
-                  <p className="font-medium text-white mb-2">Para registrar receitas:</p>
-                  <div className="space-y-1 ml-4">
-                    <p>• "recebi 1000 de salário"</p>
-                    <p>• "receita 500 freelance"</p>
-                    <p>• "ganho 800 trabalho"</p>
+                  <div>
+                      <p className="font-medium text-white mb-2">Para registrar receitas:</p>
+                      <div className="space-y-1 ml-4">
+                          <p>• "recebi 1000 salário"</p>
+                          <p>• "ganhei 500 freelance"</p>
+                      </div>
                   </div>
-                </div>
-                <div>
-                  <p className="font-medium text-white mb-2">Outros comandos:</p>
-                  <div className="space-y-1 ml-4">
-                    <p>• "relatório de hoje" ou "relatório do mês"</p>
-                    <p>• "dashboard" para receber o link</p>
-                    <p>• "apagar [ID da transação]" para excluir</p>
+                  <div>
+                      <p className="font-medium text-white mb-2">Outros comandos:</p>
+                      <div className="space-y-1 ml-4">
+                          <p>• "relatório de hoje" ou "relatório do mês"</p>
+                          <p>• "dashboard" para receber o link</p>
+                          <p>• "apagar [ID da transação]" para excluir</p>
+                      </div>
                   </div>
-                </div>
               </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
