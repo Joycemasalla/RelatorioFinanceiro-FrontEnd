@@ -228,7 +228,7 @@ const FinanceDashboard: React.FC = () => {
         <div className="bg-blue-900 rounded-lg p-4">
           <h3 className="text-sm font-semibold text-blue-100 mb-2">WhatsApp</h3>
           <p className="text-xs text-blue-200">
-            Envie "50 no mercado" ou "recebi 1000 de salário".
+            Envie "ajuda" para ver os comandos.
           </p>
         </div>
       </div>
@@ -606,6 +606,7 @@ const FinanceDashboard: React.FC = () => {
                           <p>• "relatório de hoje" ou "relatório do mês"</p>
                           <p>• "dashboard" para receber o link</p>
                           <p>• "apagar [ID da transação]" para excluir</p>
+                          <p>• "ajuda" para ver a lista completa de comandos</p>
                       </div>
                   </div>
               </div>
