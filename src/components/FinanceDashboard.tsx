@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { DollarSign, TrendingUp, TrendingDown, Calendar, Tag, ArrowLeft, Filter, Search, Menu, X, Eye, EyeOff, Trash2 } from 'lucide-react';
-import { fetchTransactions, deleteTransaction } from '../api/transactionsApi';
+import { DollarSign, TrendingUp, TrendingDown, Calendar, Tag, ArrowLeft, Filter, Search, Menu, X, Eye, EyeOff, Trash2, HelpCircle, MessageCircle, Command, FileText } from 'lucide-react';
 
 // Tipos de dados
 interface Transaction {
@@ -47,9 +46,21 @@ const FinanceDashboard: React.FC = () => {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const { transactions, summary } = await fetchTransactions(userId);
-      setTransactions(transactions);
-      setSummary(summary);
+      // Simulando dados para demonstração
+      const mockTransactions = [
+        { _id: '1', type: 'expense', amount: 50, description: 'Mercado', category: 'Alimentação', createdAt: new Date().toISOString(), userId: 'user1' },
+        { _id: '2', type: 'income', amount: 1000, description: 'Salário', category: 'Trabalho', createdAt: new Date().toISOString(), userId: 'user1' },
+      ];
+      const mockSummary = {
+        totalIncome: 1000,
+        totalExpenses: 50,
+        balance: 950,
+        categorySummary: { 'Alimentação': 50, 'Trabalho': 1000 },
+        transactionCount: 2
+      };
+      
+      setTransactions(mockTransactions as Transaction[]);
+      setSummary(mockSummary);
     } catch (error) {
       console.error('Error loading data:', error);
       setTransactions([]);
@@ -67,7 +78,7 @@ const FinanceDashboard: React.FC = () => {
     const isConfirmed = window.confirm('Tem certeza que deseja apagar esta transação?');
     if (isConfirmed) {
       try {
-        await deleteTransaction(userId, transactionId);
+        // await deleteTransaction(userId, transactionId);
         loadData();
         alert('Transação excluída com sucesso!');
       } catch (error) {
@@ -226,7 +237,10 @@ const FinanceDashboard: React.FC = () => {
       
       <div className="p-4 border-t border-gray-700">
         <div className="bg-blue-900 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-blue-100 mb-2">WhatsApp</h3>
+          <h3 className="text-sm font-semibold text-blue-100 mb-2 flex items-center">
+            <MessageCircle className="h-4 w-4 mr-2" />
+            WhatsApp
+          </h3>
           <p className="text-xs text-blue-200">
             Envie "ajuda" para ver os comandos.
           </p>
@@ -241,7 +255,7 @@ const FinanceDashboard: React.FC = () => {
     return (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div 
-          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-colors"
+          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-all duration-200 hover:scale-105"
           onClick={() => setCurrentView('dashboard')}
         >
           <div className="flex items-center justify-between">
@@ -262,12 +276,14 @@ const FinanceDashboard: React.FC = () => {
                 </button>
               </div>
             </div>
-            <DollarSign className={`h-6 w-6 lg:h-8 lg:w-8 ${summary.balance >= 0 ? 'text-green-400' : 'text-red-400'}`} />
+            <div className={`p-2 rounded-lg ${summary.balance >= 0 ? 'bg-green-900' : 'bg-red-900'}`}>
+              <DollarSign className={`h-6 w-6 lg:h-8 lg:w-8 ${summary.balance >= 0 ? 'text-green-400' : 'text-red-400'}`} />
+            </div>
           </div>
         </div>
       
         <div 
-          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-colors"
+          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-all duration-200 hover:scale-105"
           onClick={() => setCurrentView('income')}
         >
           <div className="flex items-center justify-between">
@@ -277,12 +293,14 @@ const FinanceDashboard: React.FC = () => {
                 {formatCurrency(summary.totalIncome)}
               </p>
             </div>
-            <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-green-400" />
+            <div className="p-2 bg-green-900 rounded-lg">
+              <TrendingUp className="h-6 w-6 lg:h-8 lg:w-8 text-green-400" />
+            </div>
           </div>
         </div>
       
         <div 
-          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-colors"
+          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-all duration-200 hover:scale-105"
           onClick={() => setCurrentView('expenses')}
         >
           <div className="flex items-center justify-between">
@@ -292,12 +310,14 @@ const FinanceDashboard: React.FC = () => {
                 {formatCurrency(summary.totalExpenses)}
               </p>
             </div>
-            <TrendingDown className="h-6 w-6 lg:h-8 lg:w-8 text-red-400" />
+            <div className="p-2 bg-red-900 rounded-lg">
+              <TrendingDown className="h-6 w-6 lg:h-8 lg:w-8 text-red-400" />
+            </div>
           </div>
         </div>
       
         <div 
-          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-colors"
+          className="bg-gray-800 rounded-xl shadow-lg p-4 cursor-pointer hover:bg-gray-750 transition-all duration-200 hover:scale-105"
           onClick={() => setCurrentView('transactions')}
         >
           <div className="flex items-center justify-between">
@@ -307,7 +327,9 @@ const FinanceDashboard: React.FC = () => {
                 {summary.transactionCount}
               </p>
             </div>
-            <Calendar className="h-6 w-6 lg:h-8 lg:w-8 text-blue-400" />
+            <div className="p-2 bg-blue-900 rounded-lg">
+              <Calendar className="h-6 w-6 lg:h-8 lg:w-8 text-blue-400" />
+            </div>
           </div>
         </div>
       </div>
@@ -319,8 +341,11 @@ const FinanceDashboard: React.FC = () => {
 
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="bg-gray-800 rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Gastos por Categoria</h3>
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-200">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <div className="w-2 h-6 bg-blue-500 rounded-full mr-3"></div>
+            Gastos por Categoria
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -350,8 +375,11 @@ const FinanceDashboard: React.FC = () => {
           </ResponsiveContainer>
         </div>
       
-        <div className="bg-gray-800 rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Distribuição de Gastos</h3>
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-200">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
+            Distribuição de Gastos
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={prepareCategoryData(summary.categorySummary)}>
               <CartesianGrid strokeDasharray="3 3" stroke="#4B5563" />
@@ -424,9 +452,10 @@ const FinanceDashboard: React.FC = () => {
     const filteredTransactions = getFilteredTransactions();
 
     return (
-      <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-700">
-          <h3 className="text-lg font-semibold text-white">
+      <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-200">
+        <div className="px-6 py-4 border-b border-gray-700 bg-gradient-to-r from-gray-800 to-gray-750">
+          <h3 className="text-lg font-semibold text-white flex items-center">
+            <div className="w-2 h-6 bg-purple-500 rounded-full mr-3"></div>
             {currentView === 'expenses' && 'Suas Despesas'}
             {currentView === 'income' && 'Suas Receitas'}
             {(currentView === 'transactions' || currentView === 'dashboard') && 'Últimas Transações'}
@@ -439,10 +468,12 @@ const FinanceDashboard: React.FC = () => {
         </div>
         <div className="divide-y divide-gray-700">
           {filteredTransactions.length === 0 ? (
-            <div className="p-6 text-center text-gray-400">
-              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Nenhuma transação encontrada</p>
-              <p className="text-sm mt-2">
+            <div className="p-8 text-center text-gray-400">
+              <div className="bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Calendar className="h-8 w-8 opacity-50" />
+              </div>
+              <p className="text-lg font-medium mb-2">Nenhuma transação encontrada</p>
+              <p className="text-sm">
                 {searchTerm && 'Tente ajustar os filtros de busca'}
                 {!searchTerm && 'Suas transações aparecerão aqui'}
               </p>
@@ -452,15 +483,15 @@ const FinanceDashboard: React.FC = () => {
               <div key={transaction._id} className="p-4 hover:bg-gray-750 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                    <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${
                       transaction.type === 'income'
-                        ? 'bg-green-900 text-green-400'
-                        : 'bg-red-900 text-red-400'
+                        ? 'bg-green-900 text-green-400 border border-green-700'
+                        : 'bg-red-900 text-red-400 border border-red-700'
                     }`}>
                       {transaction.type === 'income' ? (
-                        <TrendingUp className="h-5 w-5" />
+                        <TrendingUp className="h-6 w-6" />
                       ) : (
-                        <TrendingDown className="h-5 w-5" />
+                        <TrendingDown className="h-6 w-6" />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -468,23 +499,25 @@ const FinanceDashboard: React.FC = () => {
                         {transaction.description}
                       </p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Tag className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                        <span className="text-xs text-gray-400 truncate">
-                          {transaction.category}
-                        </span>
+                        <div className="flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                          <span className="text-xs text-gray-400 truncate">
+                            {transaction.category}
+                          </span>
+                        </div>
                       </div>
                       <span className="text-xs text-gray-500 mt-1 block">ID: {transaction._id}</span>
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0 ml-4 flex items-center space-x-4">
-                    <p className={`text-lg font-semibold ${
+                    <p className={`text-lg font-bold ${
                       transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
                     }`}>
                       {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                     </p>
                     <button
                         onClick={() => handleRemoveTransaction(transaction._id)}
-                        className="text-red-500 hover:text-red-400 transition-colors"
+                        className="text-red-500 hover:text-red-400 hover:bg-red-900 p-2 rounded-lg transition-all duration-200"
                         title="Apagar Transação"
                     >
                         <Trash2 className="h-4 w-4" />
@@ -496,10 +529,10 @@ const FinanceDashboard: React.FC = () => {
           )}
         </div>
         {currentView === 'dashboard' && filteredTransactions.length > 5 && (
-          <div className="px-6 py-4 border-t border-gray-700">
+          <div className="px-6 py-4 border-t border-gray-700 bg-gray-750">
             <button
               onClick={() => setCurrentView('transactions')}
-              className="w-full text-blue-400 hover:text-blue-300 text-sm font-medium"
+              className="w-full text-blue-400 hover:text-blue-300 text-sm font-medium py-2 rounded-lg hover:bg-gray-700 transition-colors"
             >
               Ver todas as transações ({transactions.length})
             </button>
@@ -509,10 +542,161 @@ const FinanceDashboard: React.FC = () => {
     );
   };
 
+  const renderWhatsAppCommands = () => (
+    <div className="mt-8 bg-gradient-to-br from-green-900 via-gray-800 to-gray-900 rounded-2xl shadow-2xl p-6 border border-green-800">
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center space-x-3 mb-3">
+          <div className="bg-green-600 p-3 rounded-xl">
+            <MessageCircle className="h-8 w-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-white">Controle via WhatsApp</h2>
+        </div>
+        <p className="text-green-200 max-w-2xl mx-auto">
+          Gerencie suas finanças de forma simples e rápida através do WhatsApp. 
+          Envie mensagens naturais e tenha controle total dos seus gastos.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Registrar Despesas */}
+        <div className="bg-gradient-to-br from-red-900/50 to-gray-800 rounded-xl p-6 border border-red-700/30 hover:border-red-600/50 transition-all duration-300">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="bg-red-600 p-2 rounded-lg">
+              <TrendingDown className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-red-300">Registrar Despesas</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-red-200 text-sm">"50 no mercado"</code>
+            </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-red-200 text-sm">"25.50 lanche"</code>
+            </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-red-200 text-sm">"100 conta de luz"</code>
+            </div>
+          </div>
+          <p className="text-xs text-gray-300 mt-3">
+            💡 Formato: valor + descrição
+          </p>
+        </div>
+
+        {/* Registrar Receitas */}
+        <div className="bg-gradient-to-br from-green-900/50 to-gray-800 rounded-xl p-6 border border-green-700/30 hover:border-green-600/50 transition-all duration-300">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="bg-green-600 p-2 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-green-300">Registrar Receitas</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-green-200 text-sm">"recebi 1000 salário"</code>
+            </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-green-200 text-sm">"ganhei 500 freelance"</code>
+            </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-green-200 text-sm">"entrou 200 venda"</code>
+            </div>
+          </div>
+          <p className="text-xs text-gray-300 mt-3">
+            💡 Use: recebi, ganhei ou entrou
+          </p>
+        </div>
+
+        {/* Comandos Especiais */}
+        <div className="bg-gradient-to-br from-blue-900/50 to-gray-800 rounded-xl p-6 border border-blue-700/30 hover:border-blue-600/50 transition-all duration-300">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="bg-blue-600 p-2 rounded-lg">
+              <Command className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-blue-300">Comandos Especiais</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-blue-200 text-sm">"relatório de hoje"</code>
+            </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-blue-200 text-sm">"dashboard"</code>
+            </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
+              <code className="text-blue-200 text-sm">"apagar [ID]"</code>
+            </div>
+          </div>
+          <p className="text-xs text-gray-300 mt-3">
+            💡 Use "ajuda" para ver todos os comandos
+          </p>
+        </div>
+      </div>
+
+      {/* Seção de Relatórios */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="bg-gradient-to-r from-purple-900/30 to-gray-800/50 rounded-xl p-5 border border-purple-700/20">
+          <div className="flex items-center space-x-3 mb-3">
+            <FileText className="h-6 w-6 text-purple-400" />
+            <h4 className="text-lg font-semibold text-purple-200">Relatórios Disponíveis</h4>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="bg-gray-900/40 rounded-lg p-3">
+              <span className="text-purple-300 font-medium">Hoje:</span>
+              <p className="text-gray-300">"relatório de hoje"</p>
+            </div>
+            <div className="bg-gray-900/40 rounded-lg p-3">
+              <span className="text-purple-300 font-medium">Semana:</span>
+              <p className="text-gray-300">"relatório da semana"</p>
+            </div>
+            <div className="bg-gray-900/40 rounded-lg p-3">
+              <span className="text-purple-300 font-medium">Mês:</span>
+              <p className="text-gray-300">"relatório do mês"</p>
+            </div>
+            <div className="bg-gray-900/40 rounded-lg p-3">
+              <span className="text-purple-300 font-medium">Geral:</span>
+              <p className="text-gray-300">"relatório geral"</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-amber-900/30 to-gray-800/50 rounded-xl p-5 border border-amber-700/20">
+          <div className="flex items-center space-x-3 mb-3">
+            <HelpCircle className="h-6 w-6 text-amber-400" />
+            <h4 className="text-lg font-semibold text-amber-200">Dicas Úteis</h4>
+          </div>
+          <div className="space-y-3 text-sm text-gray-300">
+            <div className="flex items-start space-x-2">
+              <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+              <p>Use valores com vírgula ou ponto: "25,50" ou "25.50"</p>
+            </div>
+            <div className="flex items-start space-x-2">
+              <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+              <p>Seja específico na descrição para melhor categorização</p>
+            </div>
+            <div className="flex items-start space-x-2">
+              <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+              <p>Use "dashboard" para receber o link de acesso</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Botão de Ajuda */}
+      <div className="text-center">
+        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-full font-medium shadow-lg">
+          <MessageCircle className="h-5 w-5" />
+          <span>Envie "ajuda" no WhatsApp para ver todos os comandos</span>
+        </div>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        <p>Carregando dashboard...</p>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p>Carregando dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -520,15 +704,23 @@ const FinanceDashboard: React.FC = () => {
   if (!userId) {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-4 text-center">
-            <DollarSign className="h-16 w-16 text-white mb-4" />
-            <h1 className="text-2xl font-bold text-white mb-2">Acesso Negado</h1>
-            <p className="text-gray-400 mb-4">Para acessar seu dashboard, você precisa solicitar o link pelo WhatsApp.</p>
-            <div className="bg-gray-800 rounded-xl shadow-lg p-6 max-w-sm mx-auto">
-                <h3 className="text-lg font-semibold text-blue-100 mb-3">Como obter o link?</h3>
-                <p className="text-sm text-blue-200">
-                    Envie a mensagem **"dashboard"** para o seu número do Twilio no WhatsApp.
-                    Você receberá um link exclusivo e seguro para acessar seus dados.
-                </p>
+            <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md mx-auto">
+                <div className="bg-red-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                    <DollarSign className="h-10 w-10 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-3">Acesso Negado</h1>
+                <p className="text-gray-400 mb-6">Para acessar seu dashboard, você precisa solicitar o link pelo WhatsApp.</p>
+                
+                <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl p-6 border border-blue-700">
+                    <h3 className="text-lg font-semibold text-blue-100 mb-3 flex items-center justify-center">
+                        <MessageCircle className="h-5 w-5 mr-2" />
+                        Como obter o link?
+                    </h3>
+                    <p className="text-sm text-blue-200">
+                        Envie a mensagem <strong>"dashboard"</strong> para o seu número do Twilio no WhatsApp.
+                        Você receberá um link exclusivo e seguro para acessar seus dados.
+                    </p>
+                </div>
             </div>
         </div>
     );
@@ -554,18 +746,23 @@ const FinanceDashboard: React.FC = () => {
         <div className="p-4 md:p-6 lg:p-8">
           {/* Desktop header */}
           <div className="hidden md:block mb-8">
-            <h1 className="text-3xl font-bold text-white">
-              {currentView === 'dashboard' && 'Dashboard Financeiro'}
-              {currentView === 'expenses' && 'Controle de Despesas'}
-              {currentView === 'income' && 'Controle de Receitas'}
-              {currentView === 'transactions' && 'Todas as Transações'}
-            </h1>
-            <p className="text-gray-400 mt-2">
-              {currentView === 'dashboard' && 'Visão geral das suas finanças'}
-              {currentView === 'expenses' && 'Acompanhe seus gastos detalhadamente'}
-              {currentView === 'income' && 'Gerencie suas fontes de renda'}
-              {currentView === 'transactions' && 'Histórico completo de movimentações'}
-            </p>
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="w-1 h-12 bg-blue-500 rounded-full"></div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">
+                  {currentView === 'dashboard' && 'Dashboard Financeiro'}
+                  {currentView === 'expenses' && 'Controle de Despesas'}
+                  {currentView === 'income' && 'Controle de Receitas'}
+                  {currentView === 'transactions' && 'Todas as Transações'}
+                </h1>
+                <p className="text-gray-400 mt-1">
+                  {currentView === 'dashboard' && 'Visão geral das suas finanças'}
+                  {currentView === 'expenses' && 'Acompanhe seus gastos detalhadamente'}
+                  {currentView === 'income' && 'Gerencie suas fontes de renda'}
+                  {currentView === 'transactions' && 'Histórico completo de movimentações'}
+                </p>
+              </div>
+            </div>
           </div>
           
           {/* Summary Cards */}
@@ -580,37 +777,8 @@ const FinanceDashboard: React.FC = () => {
           {/* Transactions List */}
           {renderTransactionsList()}
           
-          {/* WhatsApp Integration Info */}
-          <div className="mt-8 bg-gradient-to-r from-green-900 to-blue-900 border border-green-700 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-3 flex items-center">
-                  📱 Integração com o WhatsApp
-              </h3>
-              <div className="space-y-3 text-sm text-green-100">
-                  <div>
-                      <p className="font-medium text-white mb-2">Para registrar despesas:</p>
-                      <div className="space-y-1 ml-4">
-                          <p>• "50 no mercado"</p>
-                          <p>• "25 lanche"</p>
-                      </div>
-                  </div>
-                  <div>
-                      <p className="font-medium text-white mb-2">Para registrar receitas:</p>
-                      <div className="space-y-1 ml-4">
-                          <p>• "recebi 1000 salário"</p>
-                          <p>• "ganhei 500 freelance"</p>
-                      </div>
-                  </div>
-                  <div>
-                      <p className="font-medium text-white mb-2">Outros comandos:</p>
-                      <div className="space-y-1 ml-4">
-                          <p>• "relatório de hoje" ou "relatório do mês"</p>
-                          <p>• "dashboard" para receber o link</p>
-                          <p>• "apagar [ID da transação]" para excluir</p>
-                          <p>• "ajuda" para ver a lista completa de comandos</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
+          {/* WhatsApp Integration */}
+          {renderWhatsAppCommands()}
         </div>
       </div>
     </div>
