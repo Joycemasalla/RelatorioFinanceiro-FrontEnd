@@ -786,4 +786,3 @@ const FinanceDashboard: React.FC = () => {
 };
 
 export default FinanceDashboard;
-//melhor layout
